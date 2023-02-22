@@ -1,0 +1,9 @@
+numpy~=1.23.2
+matplotlib~=3.6.3
+sympy~=1.11.1
+pandas~=1.5.2
+pydrake
+scipy~=1.9.2
+
+jax~=0.4.2
+trajax~=0.0.1

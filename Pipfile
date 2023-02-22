@@ -1,0 +1,23 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+numpy = "~=1.23.2"
+matplotlib = "~=3.1.2"
+sympy = "*"
+pandas = "*"
+pydrake = "*"
+scipy = "*"
+quanser-linear-inverted-pendulum = {path = "./software/python"}
+drake = "*"
+tqdm = "*"
+jax = "*"
+jaxlib = "*"
+pycparser = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.8"

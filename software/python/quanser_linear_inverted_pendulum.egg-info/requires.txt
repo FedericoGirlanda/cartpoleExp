@@ -1,0 +1,12 @@
+scipy
+ipykernel
+pyyaml
+argparse
+lxml
+numpy~=1.23.2
+matplotlib~=3.1.2
+sympy
+pandas
+pydrake
+filterpy
+cma

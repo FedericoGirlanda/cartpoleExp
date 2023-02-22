@@ -1,0 +1,9 @@
+Metadata-Version: 2.1
+Name: quanser-linear-inverted-pendulum
+Version: 1.0.0
+Home-page: 
+Author: Max
+Classifier: Development Status :: 5 - Stable
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Academic Usage
+Classifier: Programming Language :: Python
