@@ -3,7 +3,7 @@ import numpy as np
 from quanser.hardware import HIL, HILError, EncoderQuadratureMode
 
 
-def real_system_control(sys, controller, lqr, data_dict, eta=np.radians(10), limit=0.3, V_max=6, disturbance = False):
+def real_system_control(sys, controller, lqr, data_dict, eta=np.radians(10), limit=0.45, V_max=6.5, disturbance = False):
 
     # loop setup
     controller.get_control_output(0., 0., 0., 0., 0., 0)
@@ -48,8 +48,6 @@ def real_system_control(sys, controller, lqr, data_dict, eta=np.radians(10), lim
 
         # initial recordings
         time_0 = time.time()
-        old_force = 0 #filtering the input
-        b = 1
         for k_loop in range(n):
             # determine timestep
             time_start = time.time() - time_0
@@ -68,6 +66,11 @@ def real_system_control(sys, controller, lqr, data_dict, eta=np.radians(10), lim
             if k_loop > 0:
                 state[2, k_loop] = (state[0, k_loop] - state[0, k_loop - 1]) / (time_start - time_start_last_iteration)
                 state[3, k_loop] = (state[1, k_loop] - state[1, k_loop - 1]) / (time_start - time_start_last_iteration)
+            # v_filtered = np.mean(state[2,:][range(max(0,k_loop-1),k_loop)]) # filter noisy velocity measurements
+                # w_filtered = np.mean(state[3,:][range(max(0,k_loop-1),k_loop)])
+            # else:
+                # v_filtered = 0
+                # w_filtered = 0
 
             # control force
             if -eta < ((state[1, k_loop] + np.pi) % (2 * np.pi) - np.pi) < eta and lqr is not None:
@@ -81,17 +84,17 @@ def real_system_control(sys, controller, lqr, data_dict, eta=np.radians(10), lim
                 print('Disturbance Engaged!')
                 force[k_loop] = 0
             else:
-                print(f'1: {time.time()- time_0}')
+                #print(f'1: {time.time()- time_0}')
                 force[k_loop], J[k_loop] = controller.get_control_output(time_start, state[0, k_loop], state[1, k_loop],
                                                                          state[2, k_loop], state[3, k_loop], k_loop)
-                force[k_loop] = b*force[k_loop] + (b-1)*old_force # filtering the input
-                old_force = force[k_loop]
-                print(f'2: {time.time() - time_0}')
+                #print(f'2: {time.time() - time_0}')
             # if k_loop == 0:
             #     AAA = time.time()
 
             # compute corresponding voltage
             buffer_out[0] = sys.amplitude(force[k_loop], state[2, k_loop])
+            if abs(buffer_out[0]>abs(V_max)):
+                print(buffer_out[0])
 
             # displacement constraints
             if state[0, k_loop] < -limit or state[0, k_loop] > limit:
@@ -116,7 +119,7 @@ def real_system_control(sys, controller, lqr, data_dict, eta=np.radians(10), lim
 
             # recording
             t[k_loop] = time_start
-            force[k_loop] = sys.force(buffer_out[0], state[2, k_loop])
+            #force[k_loop] = sys.force(buffer_out[0], state[2, k_loop])
             # rec_command_out[k_loop] = buffer_out[0]
             # rec_command_in[k_loop] = buffer_in[0]
 

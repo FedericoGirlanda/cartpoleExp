@@ -39,11 +39,11 @@ def real_system_simulation(sys, controller, lqr, data_dict, eta=np.radians(10), 
 
     try:
         # communication setup
-        card = HIL("q2_usb", "0")
-        card.task_create_analog_reader(samples_in_buffer, channels, num_channels)
-        card.set_encoder_counts(channels, num_channels, enc_buffer_in)
-        card.set_encoder_quadrature_mode(channels, num_channels, np.array([EncoderQuadratureMode.X4,
-                                                                           EncoderQuadratureMode.X4], dtype=np.uint32))
+        # card = HIL("q2_usb", "0")
+        # card.task_create_analog_reader(samples_in_buffer, channels, num_channels)
+        # card.set_encoder_counts(channels, num_channels, enc_buffer_in)
+        # card.set_encoder_quadrature_mode(channels, num_channels, np.array([EncoderQuadratureMode.X4,
+        #                                                                  EncoderQuadratureMode.X4], dtype=np.uint32))
 
         print('-Motor Control Engaged-')
 
@@ -57,12 +57,13 @@ def real_system_simulation(sys, controller, lqr, data_dict, eta=np.radians(10), 
             # if k_loop == 1:
             #     print(f'Time after first write until second read:{time.time()-AAA}s')
             # read card
-            card.read(channels, num_channels, channels, num_channels,
-                      None, 0, None, 0, buffer_in, enc_buffer_in, None, None)
+            # card.read(channels, num_channels, channels, num_channels,
+                    #   None, 0, None, 0, buffer_in, enc_buffer_in, None, None)
 
             # create state vector
             if k_loop > 0:
                 state[:, k_loop] = discrete_dynamics_rungekutta(sys, state[:, k_loop-1], force[k_loop-1], dt)
+
             # control force
             if -eta < ((state[1, k_loop] + np.pi) % (2 * np.pi) - np.pi) < eta and lqr is not None:
                 if switch == 0:
@@ -95,7 +96,7 @@ def real_system_simulation(sys, controller, lqr, data_dict, eta=np.radians(10), 
             buffer_out[0] = np.clip(buffer_out[0], -V_max, V_max)
 
             # write card
-            card.write_analog(channels, num_channels, buffer_out)
+            #card.write_analog(channels, num_channels, buffer_out)
 
             # measurement: control frequency
             if k_loop > 1:
@@ -122,7 +123,7 @@ def real_system_simulation(sys, controller, lqr, data_dict, eta=np.radians(10), 
 
         # security
         buffer_out = np.array([0.0, 0.0], dtype=np.float64)
-        card.write_analog(channels, num_channels, buffer_out)
+        #card.write_analog(channels, num_channels, buffer_out)
 
         # output: control frequency measurement
         time_end = time.time() - time_0
@@ -143,8 +144,8 @@ def real_system_simulation(sys, controller, lqr, data_dict, eta=np.radians(10), 
         print("Aborted")
     finally:
         buffer_out = np.array([0.0, 0.0], dtype=np.float64)
-        card.write_analog(channels, num_channels, buffer_out)
-        if card.is_valid():
-            card.close()
+        #card.write_analog(channels, num_channels, buffer_out)
+        # if card.is_valid():
+            # card.close()
 
     return data_dict
