@@ -3,7 +3,7 @@ import numpy as np
 from quanser.hardware import HIL, HILError, EncoderQuadratureMode
 
 
-def real_system_control(sys, controller, lqr, data_dict, eta=np.radians(10), limit=0.45, V_max=6.5, disturbance = False):
+def real_system_control(sys, controller, lqr, data_dict, eta=np.radians(10), limit=0.4, V_max=7, disturbance = False):
 
     # loop setup
     controller.get_control_output(0., 0., 0., 0., 0., 0)
