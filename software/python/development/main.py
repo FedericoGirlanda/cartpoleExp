@@ -13,7 +13,7 @@ from utilities import process_data, plotter
 
 # experimental setups
 simulation = False
-disturbance = False
+disturbance = True
 if disturbance:
     lbl = "_dist"
 elif disturbance and simulation:
@@ -22,22 +22,22 @@ elif simulation:
     lbl = "_sim"
 else:
     lbl = ""
-exp_name = "trajExpRtcd"+lbl+".csv"
-traj_file = "trajRtcd.csv"
+exp_name = "trajExpRtc"+lbl+".csv"
+traj_file = "trajRtc.csv"
 # Q = np.diag([10,10,.1,.1])
 # R = np.eye(1)*10
-Q = np.diag([1.31,1.023,.1,.1])
-R = np.eye(1)*5.71
-dt_sim = 0.02
+Q = np.diag([1.71,1.01,.1,.1])
+R = np.eye(1)*5.01
+dt_sim = 0.01
 
 # system setup
 sys = Cartpole("short")  # setup cartpole system
-#old_Mp = sys.Mp
-# sys.Mp = 0.227
-# sys.Jp = sys.Jp + (sys.Mp-old_Mp)*(sys.lp**2)
+old_Mp = sys.Mp
+sys.Mp = 0.227
+sys.Jp = sys.Jp + (sys.Mp-old_Mp)*(sys.lp**2)
 sys.fl = 6
-#urdf_file = "cartpole_CMAES.urdf"
-urdf_file = "cartpole.urdf"
+urdf_file = "cartpole_CMAES.urdf"
+#urdf_file = "cartpole.urdf"
 
 # file paths
 WORK_DIR = Path(Path(os.path.abspath(__file__)).parents[3])
